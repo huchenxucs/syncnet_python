@@ -17,7 +17,7 @@ from scipy import signal
 
 from detectors import S3FD
 
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+# os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 # ========== ========== ========== ==========
 # # PARSE ARGS
