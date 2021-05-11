@@ -17,6 +17,8 @@ from scipy import signal
 
 from detectors import S3FD
 
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
 # ========== ========== ========== ==========
 # # PARSE ARGS
 # ========== ========== ========== ==========
@@ -27,10 +29,11 @@ parser.add_argument('--videofile',      type=str, default='',   help='Input vide
 parser.add_argument('--reference',      type=str, default='',   help='Video reference');
 parser.add_argument('--facedet_scale',  type=float, default=0.25, help='Scale factor for face detection');
 parser.add_argument('--crop_scale',     type=float, default=0.40, help='Scale bounding box');
-parser.add_argument('--min_track',      type=int, default=100,  help='Minimum facetrack duration');
+parser.add_argument('--min_track',      type=int, default=10,  help='Minimum facetrack duration');
 parser.add_argument('--frame_rate',     type=int, default=25,   help='Frame rate');
 parser.add_argument('--num_failed_det', type=int, default=25,   help='Number of missed detections allowed before tracking is stopped');
-parser.add_argument('--min_face_size',  type=int, default=100,  help='Minimum face size in pixels');
+parser.add_argument('--min_face_size',  type=int, default=10,  help='Minimum face size in pixels');
+parser.add_argument('--cpu', action='store_true', help='Use face detection on cpu')
 opt = parser.parse_args();
 
 setattr(opt,'avi_dir',os.path.join(opt.data_dir,'pyavi'))
@@ -184,7 +187,7 @@ def crop_video(opt,track,cropfile):
 
 def inference_video(opt):
 
-  DET = S3FD(device='cuda')
+  DET = S3FD(device='cuda' if not opt.cpu else 'cpu')
 
   flist = glob.glob(os.path.join(opt.frames_dir,opt.reference,'*.jpg'))
   flist.sort()

@@ -39,7 +39,7 @@ class SyncNetInstance(torch.nn.Module):
 
         self.__S__ = S(num_layers_in_fc_layers = num_layers_in_fc_layers).cuda();
 
-    def evaluate(self, opt, videofile):
+    def evaluate(self, opt, videofile, more_out=False):
 
         self.__S__.eval();
 
@@ -145,7 +145,10 @@ class SyncNetInstance(torch.nn.Module):
         print('AV offset: \t%d \nMin dist: \t%.3f\nConfidence: \t%.3f' % (offset,minval,conf))
 
         dists_npy = numpy.array([ dist.numpy() for dist in dists ])
-        return offset.numpy(), conf.numpy(), dists_npy
+        if not more_out:
+            return offset.numpy(), conf.numpy(), dists_npy
+        else:
+            return offset.numpy(), minval.numpy(), conf.numpy(), dists_npy
 
     def extract_feature(self, opt, videofile):
 
