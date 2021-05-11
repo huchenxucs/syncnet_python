@@ -35,6 +35,7 @@ flist.sort()
 # ==================== GET OFFSETS ====================
 
 dists = []
+results = []
 for idx, fname in enumerate(flist):
     offset, mindist, conf, dist = s.evaluate(opt,videofile=fname, more_out=True)
     save_dict = {
@@ -43,9 +44,13 @@ for idx, fname in enumerate(flist):
         'conf': conf,
         'dist': dist,
     }
-    dists.append(save_dict)
+    dists.append(dist)
+    results.append(save_dict)
       
 # ==================== PRINT RESULTS TO FILE ====================
 
 with open(os.path.join(opt.work_dir,opt.reference,'activesd.pckl'), 'wb') as fil:
     pickle.dump(dists, fil)
+
+with open(os.path.join(opt.work_dir,opt.reference,'result.pckl'), 'wb') as fil:
+    pickle.dump(results, fil)
