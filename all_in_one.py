@@ -52,7 +52,7 @@ item_ids = [x.strip().split('|')[0].strip() for x in item_ids]
 
 test_data_path_formats = get_path_format(opt.pathfile)
 os.makedirs(f"data/nb_eval/{dataset}", exist_ok=True)
-stdout_file = open(f"data/nb_eval/{dataset}/stdout.txt", 'w')
+stdout_file = open(f"data/nb_eval/{dataset}/stdout_{opt.model}.txt", 'w')
 
 new_path_formats = {}
 m = opt.model
