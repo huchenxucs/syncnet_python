@@ -157,7 +157,7 @@ def crop_video(opt,track,cropfile):
 
   # ========== CROP AUDIO FILE ==========
 
-  command = ("ffmpeg -y -i %s -ss %.3f -to %.3f %s" % (os.path.join(opt.avi_dir,opt.reference,'audio.wav'),audiostart,audioend,audiotmp)) 
+  command = ("ffmpeg -loglevel panic -y -i %s -ss %.3f -to %.3f %s" % (os.path.join(opt.avi_dir,opt.reference,'audio.wav'),audiostart,audioend,audiotmp))
   output = subprocess.call(command, shell=True, stdout=None)
 
   if output != 0:
@@ -167,7 +167,7 @@ def crop_video(opt,track,cropfile):
 
   # ========== COMBINE AUDIO AND VIDEO FILES ==========
 
-  command = ("ffmpeg -y -i %st.avi -i %s -c:v copy -c:a copy %s.avi" % (cropfile,audiotmp,cropfile))
+  command = ("ffmpeg -loglevel panic -y -i %st.avi -i %s -c:v copy -c:a copy %s.avi" % (cropfile,audiotmp,cropfile))
   output = subprocess.call(command, shell=True, stdout=None)
 
   if output != 0:
@@ -283,13 +283,13 @@ os.makedirs(os.path.join(opt.tmp_dir,opt.reference))
 
 # ========== CONVERT VIDEO AND EXTRACT FRAMES ==========
 
-command = ("ffmpeg -y -i %s -qscale:v 2 -async 1 -r 25 %s" % (opt.videofile,os.path.join(opt.avi_dir,opt.reference,'video.avi')))
+command = ("ffmpeg -loglevel panic -y -i %s -qscale:v 2 -async 1 -r 25 %s" % (opt.videofile,os.path.join(opt.avi_dir,opt.reference,'video.avi')))
 output = subprocess.call(command, shell=True, stdout=None)
 
-command = ("ffmpeg -y -i %s -qscale:v 2 -threads 1 -f image2 %s" % (os.path.join(opt.avi_dir,opt.reference,'video.avi'),os.path.join(opt.frames_dir,opt.reference,'%06d.jpg'))) 
+command = ("ffmpeg -loglevel panic -y -i %s -qscale:v 2 -threads 1 -f image2 %s" % (os.path.join(opt.avi_dir,opt.reference,'video.avi'),os.path.join(opt.frames_dir,opt.reference,'%06d.jpg')))
 output = subprocess.call(command, shell=True, stdout=None)
 
-command = ("ffmpeg -y -i %s -ac 1 -vn -acodec pcm_s16le -ar 16000 %s" % (os.path.join(opt.avi_dir,opt.reference,'video.avi'),os.path.join(opt.avi_dir,opt.reference,'audio.wav'))) 
+command = ("ffmpeg -loglevel panic -y -i %s -ac 1 -vn -acodec pcm_s16le -ar 16000 %s" % (os.path.join(opt.avi_dir,opt.reference,'video.avi'),os.path.join(opt.avi_dir,opt.reference,'audio.wav')))
 output = subprocess.call(command, shell=True, stdout=None)
 
 # ========== FACE DETECTION ==========

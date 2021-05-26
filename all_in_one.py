@@ -46,6 +46,7 @@ with open(metadata_path, 'r') as f:
 item_ids = [x.strip().split('|')[0].strip() for x in item_ids]
 
 test_data_path_formats = get_path_format(opt.pathfile)
+os.makedirs(f"data/nb_eval/{dataset}", exist_ok=True)
 stdout_file = open(f"data/nb_eval/{dataset}/stdout.txt", 'w')
 for model_name, path_format in test_data_path_formats.items():
     print(f"Dataset: {dataset}, model_name: {model_name}")

@@ -82,7 +82,7 @@ vOut.release()
 
 # ========== COMBINE AUDIO AND VIDEO FILES ==========
 
-command = ("ffmpeg -y -i %s -i %s -c:v copy -c:a copy %s" % (os.path.join(opt.avi_dir,opt.reference,'video_only.avi'),os.path.join(opt.avi_dir,opt.reference,'audio.wav'),os.path.join(opt.avi_dir,opt.reference,'video_out.avi'))) #-async 1 
+command = ("ffmpeg -loglevel panic -y -i %s -i %s -c:v copy -c:a copy %s" % (os.path.join(opt.avi_dir,opt.reference,'video_only.avi'),os.path.join(opt.avi_dir,opt.reference,'audio.wav'),os.path.join(opt.avi_dir,opt.reference,'video_out.avi'))) #-async 1
 output = subprocess.call(command, shell=True, stdout=None)
 
 

@@ -47,6 +47,12 @@ $DATA_DIR/pyavi/$REFERENCE/video_out.avi - output video (as shown below)
   <img src="img/ex2.jpg" width="45%"/>
 </p>
 
+
+Run SyncNet for my own test:
+```
+PYTHONPATH=. CUDA_VISIBLE_DEVICES=0 python3 all_in_one.py --dataset chem --metafile data/chem-metadata-test.txt --pathfile data/chem_path.txt
+```
+
 ## Publications
  
 ```
