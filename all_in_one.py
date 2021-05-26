@@ -62,7 +62,7 @@ new_path_formats[m] = test_data_path_formats[m]
 # jobs = []
 for model_name, path_format in new_path_formats.items():
     print(f"Dataset: {dataset}, model_name: {model_name}")
-    for idx, name in tqdm(enumerate(item_ids)):
+    for idx, name in enumerate(tqdm(item_ids)):
         videofile = path_format.format(name)
         ref_name = name
         data_dir = f"data/nb_eval/{dataset}/{model_name}"
