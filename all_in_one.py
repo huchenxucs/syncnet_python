@@ -64,6 +64,9 @@ for model_name, path_format in new_path_formats.items():
     print(f"Dataset: {dataset}, model_name: {model_name}")
     for idx, name in enumerate(tqdm(item_ids)):
         videofile = path_format.format(name)
+        if not os.path.exists(videofile):
+            print(f"| {dataset} {model_name} {name} is not exist!")
+
         ref_name = name
         data_dir = f"data/nb_eval/{dataset}/{model_name}"
         result_path = os.path.join(data_dir, 'pywork', ref_name, 'result.pckl')
