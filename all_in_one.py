@@ -13,8 +13,10 @@ parser = argparse.ArgumentParser(description="SyncNet for Neural Dubber")
 parser.add_argument('--dataset', type=str, default='chem', help='Dataset type')
 parser.add_argument('--metafile', type=str, default='', help='metadata csv file path')
 parser.add_argument('--pathfile', type=str, default='', help='file contain the test sample path')
+parser.add_argument('--model', type=str, default='', help='model name')
 parser.add_argument('--work_num', type=int, default=8, help='cpu number')
 parser.add_argument('--gpu_num', type=int, default=1, help='cpu number')
+
 opt = parser.parse_args()
 assert opt.dataset in ['chem', 'lrs2']
 dataset = opt.dataset
@@ -26,9 +28,9 @@ python run_visualise.py --videofile /path/to/video.mp4 --reference name_of_video
 """
 
 
-def run_syncnet_all(cuda_id, videofile, ref_name, data_dir, stdout=None):
-    cmd1 = f"CUDA_VISIBLE_DEVICES={cuda_id} python3 run_pipeline.py --videofile {videofile} --reference {ref_name} --data_dir {data_dir}"
-    cmd2 = f"CUDA_VISIBLE_DEVICES={cuda_id} python3 run_syncnet.py --videofile {videofile} --reference {ref_name} --data_dir {data_dir}"
+def run_syncnet_all(videofile, ref_name, data_dir, stdout=None):
+    cmd1 = f"python3 run_pipeline.py --videofile {videofile} --reference {ref_name} --data_dir {data_dir}"
+    cmd2 = f"python3 run_syncnet.py --videofile {videofile} --reference {ref_name} --data_dir {data_dir}"
     subprocess.check_call(cmd1, stdout=stdout, shell=True)
     subprocess.check_call(cmd2, stdout=stdout, shell=True)
 
@@ -52,9 +54,13 @@ test_data_path_formats = get_path_format(opt.pathfile)
 os.makedirs(f"data/nb_eval/{dataset}", exist_ok=True)
 stdout_file = open(f"data/nb_eval/{dataset}/stdout.txt", 'w')
 
-pool = Pool(opt.work_num)
-jobs = []
-for model_name, path_format in test_data_path_formats.items():
+new_path_formats = {}
+m = opt.model
+new_path_formats[m] = test_data_path_formats[m]
+
+# pool = Pool(opt.work_num)
+# jobs = []
+for model_name, path_format in new_path_formats.items():
     print(f"Dataset: {dataset}, model_name: {model_name}")
     for idx, name in tqdm(enumerate(item_ids)):
         videofile = path_format.format(name)
@@ -62,14 +68,14 @@ for model_name, path_format in test_data_path_formats.items():
         data_dir = f"data/nb_eval/{dataset}/{model_name}"
         result_path = os.path.join(data_dir, 'pywork', ref_name, 'result.pckl')
         if not os.path.exists(result_path):
-            # run_syncnet_all(videofile, ref_name, data_dir, stdout_file)
-            jobs.append(pool.apply_async(run_syncnet_all,
-                                         args=(idx % opt.gpu_num, videofile, ref_name, data_dir, stdout_file)))
+            run_syncnet_all(videofile, ref_name, data_dir, stdout_file)
+            # jobs.append(pool.apply_async(run_syncnet_all,
+            #                              args=(idx % opt.gpu_num, videofile, ref_name, data_dir, stdout_file)))
 
-pool.close()
-result_list_tqdm = []
-for job in tqdm(jobs):
-    result_list_tqdm.append(job.get())
-pool.join()
+# pool.close()
+# result_list_tqdm = []
+# for job in tqdm(jobs):
+#     result_list_tqdm.append(job.get())
+# pool.join()
 stdout_file.close()
 print("Finish!")
