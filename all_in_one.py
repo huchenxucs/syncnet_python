@@ -53,6 +53,7 @@ os.makedirs(f"data/nb_eval/{dataset}", exist_ok=True)
 stdout_file = open(f"data/nb_eval/{dataset}/stdout.txt", 'w')
 
 pool = Pool(opt.work_num)
+jobs = []
 for model_name, path_format in test_data_path_formats.items():
     print(f"Dataset: {dataset}, model_name: {model_name}")
     for idx, name in tqdm(enumerate(item_ids)):
@@ -62,9 +63,13 @@ for model_name, path_format in test_data_path_formats.items():
         result_path = os.path.join(data_dir, 'pywork', ref_name, 'result.pckl')
         if not os.path.exists(result_path):
             # run_syncnet_all(videofile, ref_name, data_dir, stdout_file)
-            pool.apply_async(run_syncnet_all, args=(idx % opt.gpu_num, videofile, ref_name, data_dir, stdout_file))
+            jobs.append(pool.apply_async(run_syncnet_all,
+                                         args=(idx % opt.gpu_num, videofile, ref_name, data_dir, stdout_file)))
 
 pool.close()
+result_list_tqdm = []
+for job in tqdm(jobs):
+    result_list_tqdm.append(job.get())
 pool.join()
 stdout_file.close()
 print("Finish!")
