@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 from tqdm import tqdm
 from multiprocessing import Pool
+import traceback
 
 # ========== ========== ========== ==========
 # # PARSE ARGS
@@ -66,14 +67,19 @@ for model_name, path_format in new_path_formats.items():
         videofile = path_format.format(name)
         if not os.path.exists(videofile):
             print(f"| {dataset} {model_name} {name} is not exist!")
+            continue
 
-        ref_name = name
-        data_dir = f"data/nb_eval/{dataset}/{model_name}"
-        result_path = os.path.join(data_dir, 'pywork', ref_name, 'result.pckl')
-        if not os.path.exists(result_path):
-            run_syncnet_all(videofile, ref_name, data_dir, stdout_file)
-            # jobs.append(pool.apply_async(run_syncnet_all,
-            #                              args=(idx % opt.gpu_num, videofile, ref_name, data_dir, stdout_file)))
+        try:
+            ref_name = name
+            data_dir = f"data/nb_eval/{dataset}/{model_name}"
+            result_path = os.path.join(data_dir, 'pywork', ref_name, 'result.pckl')
+            if not os.path.exists(result_path):
+                run_syncnet_all(videofile, ref_name, data_dir, stdout_file)
+                # jobs.append(pool.apply_async(run_syncnet_all,
+                #                              args=(idx % opt.gpu_num, videofile, ref_name, data_dir, stdout_file)))
+        except Exception as e:
+            traceback.print_exc()
+            print(e)
 
 # pool.close()
 # result_list_tqdm = []
